@@ -38,7 +38,11 @@ export interface UnionDef {
 	options: TypeDef[]
 }
 
-export type TypeDef = NullDef | ArrayDef | ObjectDef | StringDef | NumberDef | BooleanDef | UnionDef
+export interface BinaryDef {
+	$: 'binary'
+}
+
+export type TypeDef = NullDef | ArrayDef | ObjectDef | StringDef | NumberDef | BooleanDef | UnionDef | BinaryDef
 
 export interface PropertyDef {
 	name: string
@@ -60,6 +64,9 @@ export function parseTypeDef(def: TsTypeDef): TypeDef {
 		if (def.literal.kind === 'boolean') return { $: 'boolean', literal: def.literal.boolean }
 	}
 	if (def.kind === 'typeLiteral') return parseObjectDef(def.typeLiteral.properties)
+	if (def.kind === 'typeRef') {
+		if (def.typeRef.typeName === 'Uint8Array') return { $: 'binary' }
+	}
 
 	console.log('unsupported type:', def)
 	throw new Error('found an unsupported type')

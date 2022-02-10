@@ -39,4 +39,6 @@ At the start, every client makes it's own client id.  This should be a uuid.  An
 - Permissions string to pass to Deno (done)
 - Connections support in server (done)
 - Params in conventional methods (done)
-- Binary responses
+- Binary responses (done)
+- File Storage
+- TypeRef support so that not all types have to be defined "onsite"

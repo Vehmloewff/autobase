@@ -20,6 +20,7 @@ export interface UserInfo {
 	firstName: string | null
 	lastName: string | null
 	notebooks: string[]
+	avatar: Uint8Array
 }
 
 export const UserInfo = await registerModel<UserInfo>('UserInfo', { index: 'id' })
