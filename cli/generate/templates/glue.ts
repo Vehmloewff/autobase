@@ -135,8 +135,10 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 		const url = `${apiUrl}/connection`
 		console.log(`[socket] connecting to ${url}...`)
 
+		const query = new URLSearchParams({ clientId })
+
 		let didConnect = false
-		const websocket = new WebSocket(url)
+		const websocket = new WebSocket(url + query)
 
 		websocket.onclose = () => {
 			unsubscribers.forEach(fn => fn())

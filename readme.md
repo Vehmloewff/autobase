@@ -23,8 +23,8 @@ cat output.sh
 autobase compile path/to/server/dir --glue path/to/write/glue/code/to.ts --output out/Server
 ```
 
-The CLI then generates a server for you and starts it in dev mode - watching for changes and recompiling
-The CLI also generates client clue code, a file that exports a bunch of functions that you can then import and use right away.~~~~
+The CLI then generates a server for you and starts it in dev mode - watching for changes and recompiling.
+The CLI also generates client clue code, a file that exports a bunch of functions that you can then import and use right away.
 
 # Authentication
 
@@ -37,6 +37,6 @@ At the start, every client makes it's own client id.  This should be a uuid.  An
 - MVP CLI (done)
 - Glue Code (done)
 - Permissions string to pass to Deno (done)
-- Connections support in server
+- Connections support in server (done)
 - Params in conventional methods (done)
 - Binary responses

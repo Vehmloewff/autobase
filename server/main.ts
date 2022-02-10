@@ -2,6 +2,7 @@ import { http } from '../deps.ts'
 import { rootRequestHandler } from '../lib/mod.ts'
 
 import './register-controllers.ts'
+import './connection.ts'
 import './bypass/mod.ts'
 
 // TODO settings instead of globals

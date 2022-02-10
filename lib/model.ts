@@ -4,6 +4,7 @@ import { UserError } from './utils.ts'
 
 export interface Model<T> {
 	name: string
+	index: string
 	all: () => { [Symbol.asyncIterator](): AsyncGenerator<Awaited<T>, void, unknown> }
 	getAllIds: () => Promise<string[]>
 	insert: (document: T) => Promise<void>
@@ -21,6 +22,7 @@ export interface RegisterModelParams {
 
 export async function registerModel<T>(name: string, params: RegisterModelParams = {}): Promise<Model<T>> {
 	const base = `${FS_ROOT}/collections/${name}`
+	const index = params.index || 'id'
 
 	const stats = await Deno.stat(base)
 	if (!stats) await Deno.mkdir(base, { recursive: true })
@@ -34,8 +36,6 @@ export async function registerModel<T>(name: string, params: RegisterModelParams
 	const emitter = new event.EventEmitter<Events>()
 
 	function inferId(document: T) {
-		const index = params.index || 'id'
-
 		const id = document[index as keyof T]
 		if (!id) throw new Error(`cannot infer id from document: ${JSON.stringify(document, null, '\t')}`)
 
@@ -107,5 +107,5 @@ export async function registerModel<T>(name: string, params: RegisterModelParams
 		await emitter.emit('update', id)
 	}
 
-	return { name, all, getAllIds, insert, remove, get, has, update, emitter, inferId }
+	return { name, index, all, getAllIds, insert, remove, get, has, update, emitter, inferId }
 }
