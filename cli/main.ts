@@ -37,6 +37,7 @@ program
 	.command('run <dir>', 'Build and run server defined in <dir>')
 	.option('--watch', 'If passed, server will be rebuilt and restarted when content files change')
 	.option('--generate-dir', 'Directory to stash generated files in.  Defaults to `.autobase`.')
+	.option('--glue <path>', 'If specified, Autobase will generate client glue code and write it to this file')
 	.action(async (rawDir: string, options: Any) => {
 		const watch = !!options.watch
 		const dir = simplifyPath(rawDir)

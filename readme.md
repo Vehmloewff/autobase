@@ -42,3 +42,5 @@ At the start, every client makes it's own client id.  This should be a uuid.  An
 - Binary responses (done)
 - File Storage
 - TypeRef support so that not all types have to be defined "onsite"
+- Start server on a custom port (done)
+  

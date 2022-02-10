@@ -1,33 +1,50 @@
-import { http } from '../deps.ts'
+import { http, flags } from '../deps.ts'
 import { rootRequestHandler } from '../lib/mod.ts'
+import { setFsRoot, setPort } from './globals.ts'
 
 import './register-controllers.ts'
 import './connection.ts'
 import './bypass/mod.ts'
 
-// TODO settings instead of globals
-// CLI with support for BYPASS_PASSWORD and DATA_DIR
-// PORT and --port support
-// Get clusters, collections, and documents
+const options = flags.parse(Deno.args)
 
-const handler = async (request: Request): Promise<Response> => {
-	const response = await rootRequestHandler(request)
+const port: number = options.port || parseInt(Deno.env.get('PORT') || '8080')
+const dataDir: string = options.dataDir || 'data'
 
-	if (!response) return new Response('route not found', { status: http.Status.NotFound })
-
-	return response
+// Create the dataDir if it does not exist
+{
+	try {
+		await Deno.stat(dataDir)
+	} catch (_) {
+		await Deno.mkdir(dataDir, { recursive: true })
+	}
 }
 
-console.log('Starting server at http://localhost:3000')
+// Remember the globals
+setFsRoot(dataDir)
+setPort(port)
 
-http.serve(handler, {
-	port: 3000,
-	// deno-lint-ignore no-explicit-any
-	onError(error: any) {
-		if (error.isUserError) return new Response(error.message, { status: 406 })
+// Handle requests
+{
+	const handler = async (request: Request): Promise<Response> => {
+		const response = await rootRequestHandler(request)
 
-		console.log('internal server error:\n', error.message ? error.message : error)
-		console.log(error.stack)
-		return new Response('internal server error', { status: 500 })
-	},
-})
+		if (!response) return new Response('route not found', { status: http.Status.NotFound })
+
+		return response
+	}
+
+	console.log(`Starting server at http://localhost:${port}`)
+
+	http.serve(handler, {
+		port,
+		// deno-lint-ignore no-explicit-any
+		onError(error: any) {
+			if (error.isUserError) return new Response(error.message, { status: 406 })
+
+			console.log('internal server error:\n', error.message ? error.message : error)
+			console.log(error.stack)
+			return new Response('internal server error', { status: 500 })
+		},
+	})
+}
