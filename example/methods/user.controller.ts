@@ -41,6 +41,7 @@ export async function createAccount(context: Context, email: string): Promise<vo
 				lastName: null,
 				notebooks: [],
 				username: null,
+				avatar: new Uint8Array(),
 			}
 
 			await UserInfo.insert(info)

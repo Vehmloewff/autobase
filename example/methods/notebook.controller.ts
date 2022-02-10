@@ -12,7 +12,7 @@ export function $myNotebooks(connection: Connection): PluralConnection<Notebook>
 			const notebooks: Notebook[] = []
 
 			for await (const notebook of Notebook.all()) {
-				if (notebook.ownerUserId === user.id) notebooks.push(notebook)
+				if (notebook.ownerUserId === user.userId) notebooks.push(notebook)
 			}
 
 			return notebooks
