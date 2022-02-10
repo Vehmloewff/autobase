@@ -1,21 +1,21 @@
 export function getVersion() {
-	const pattern = new URLPattern({ pathname: '/Vehmloewff/autobase/:tag/cli/utils/urls.ts' })
+	const pattern = new URLPattern({ pathname: '/Vehmloewff/autobase@:tag/cli/utils/urls.ts' })
 	const url = import.meta.url
 
 	const match = pattern.exec(url)
-	console.log(match)
 	if (!match) {
-		console.log(url)
-		if (url.startsWith('http:') || url.startsWith('https:'))
-			throw new Error('Autobase must be installed at a specific version in order for it to work correctly')
+		if (url.startsWith('http:') || url.startsWith('https:')) throw new Error('Unknown installation of autobase')
 
 		return null
 	}
 
 	const { tag } = match.pathname.groups
-	if (!tag.startsWith('@')) return null
+	if (tag === 'master')
+		console.log(
+			'WARN: Autobase is installed at the dev version.  It is considered best practice to install a released version of autobase.'
+		)
 
-	return tag.slice(1)
+	return tag
 }
 
 export function getUrls() {
