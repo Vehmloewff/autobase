@@ -4,6 +4,7 @@ export function getVersion() {
 
 	const match = pattern.exec(url)
 	if (!match) {
+		console.log(url)
 		if (url.startsWith('http:') || url.startsWith('https:'))
 			throw new Error('Autobase must be installed at a specific version in order for it to work correctly')
 
