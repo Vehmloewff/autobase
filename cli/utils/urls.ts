@@ -3,6 +3,7 @@ export function getVersion() {
 	const url = import.meta.url
 
 	const match = pattern.exec(url)
+	console.log(match)
 	if (!match) {
 		console.log(url)
 		if (url.startsWith('http:') || url.startsWith('https:'))
