@@ -1,5 +1,5 @@
 export function getVersion() {
-	const pattern = new URLPattern({ pathname: '/Vehmloewff/autobase/:tag/cli/version.ts' })
+	const pattern = new URLPattern({ pathname: '/Vehmloewff/autobase/:tag/cli/utils/urls.ts' })
 	const url = import.meta.url
 
 	const match = pattern.exec(url)
