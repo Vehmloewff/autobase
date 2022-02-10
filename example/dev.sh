@@ -1,0 +1,1 @@
+autobase run . --watch --glue glue.generated.ts
