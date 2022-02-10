@@ -3,7 +3,12 @@ export function getVersion() {
 	const url = import.meta.url
 
 	const match = pattern.exec(url)
-	if (!match) return null
+	if (!match) {
+		if (url.startsWith('http:') || url.startsWith('https:'))
+			throw new Error('Autobase must be installed at a specific version in order for it to work correctly')
+
+		return null
+	}
 
 	const { tag } = match.pathname.groups
 	if (!tag.startsWith('@')) return null
