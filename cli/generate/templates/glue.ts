@@ -132,6 +132,8 @@ export const user = makeStorable<User>({
 	isReal: false,
 })
 
+export const online = makeStorable(false)
+
 /** Bare connect takes in the stores to be synced as an object { 'controllerName/methodName': storable } */
 function bareConnect(storables: Record<string, CustomStorable<any>>) {
 	return new Promise<void>(resolve => {
@@ -150,6 +152,7 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 
 		websocket.onclose = () => {
 			unsubscribers.forEach(fn => fn())
+			online.set(false)
 
 			console.log('[socket] disconnected, waiting for three seconds before reconnecting...')
 			setTimeout(() => {
@@ -161,6 +164,7 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 
 		websocket.onopen = () => {
 			console.log('[socket] connected')
+			online.set(true)
 
 			didConnect = true
 			resolve()
