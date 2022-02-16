@@ -11,9 +11,10 @@ import './bypass/mod.ts'
 	const handler = async (request: Request): Promise<Response> => {
 		const response = (await rootRequestHandler(request)) || new Response('route not found', { status: http.Status.NotFound })
 
-		response.headers.append('Access-Control-Allow-Origin', '*')
+		const headers = new Headers({ 'Access-Control-Allow-Origin': '*' })
+		for (const [key, value] of response.headers.entries()) headers.set(key, value)
 
-		return response
+		return new Response(await response.blob(), { headers, status: response.status, statusText: response.statusText })
 	}
 
 	console.log(`Starting server at http://localhost:${PORT}`)
