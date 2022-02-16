@@ -10,9 +10,8 @@ import './bypass/mod.ts'
 {
 	const handler = async (request: Request): Promise<Response> => {
 		const response =
-			(await rootRequestHandler(request)) || request.method === 'OPTIONS'
-				? new Response('ok')
-				: new Response('route not found', { status: http.Status.NotFound })
+			(await rootRequestHandler(request)) ||
+			(request.method === 'OPTIONS' ? new Response('ok') : new Response('route not found', { status: http.Status.NotFound }))
 
 		if (new URL(request.url).pathname === '/connection') return response
 
