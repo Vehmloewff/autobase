@@ -18,7 +18,7 @@ export function getVersion() {
 	return tag
 }
 
-const version = getVersion()
+export const version = getVersion()
 
 export function getUrls() {
 	const base = version ? `https://denopkg.com/Vehmloewff/autobase@${version}` : `file://${Deno.cwd()}`

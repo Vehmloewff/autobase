@@ -1,6 +1,6 @@
 import { generate } from './generate/mod.ts'
 import { setup } from './setup.ts'
-import { getVersion, getUrls } from './utils/urls.ts'
+import { version, getUrls } from './utils/urls.ts'
 import { spawn } from './utils/spawn.ts'
 import { runIfWatch } from './utils/run-if-watch.ts'
 import { sade, colors } from './deps.ts'
@@ -31,7 +31,7 @@ const parseRestArgs = (args: string[]): { deno: string[]; app: string[] } => {
 
 const program = sade('autobase')
 
-program.version(getVersion() || 'dev [un-versioned]')
+program.version(version || 'dev [un-versioned]')
 
 program
 	.command('run <dir>', 'Build and run server defined in <dir>')
