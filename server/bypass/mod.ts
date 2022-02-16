@@ -1,4 +1,5 @@
 import './clusters.ts'
+import './controllers.ts'
 import './models.ts'
 import './model.ts'
 import './settings.ts'

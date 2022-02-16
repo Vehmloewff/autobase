@@ -1,0 +1,7 @@
+{
+	"imports": {
+		"clusters.mock.ts": "../server/mock/clusters.mock.ts",
+		"controllers.mock.ts": "../server/mock/controllers.mock.ts",
+		"models.mock.ts": "../server/mock/models.mock.ts"
+	}
+}

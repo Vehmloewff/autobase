@@ -64,7 +64,7 @@ export async function generate(params: GenerateParams) {
 	await write('controllers.generated.ts', await insertInTemplate(urls.mockTemplates.controllers, generateControllers(controllerObjects)))
 
 	// write the models mock replacement
-	await write('models.mock.ts', await insertInTemplate(urls.mockTemplates.models, generateModels(clusterObjects)))
+	await write('models.generated.ts', await insertInTemplate(urls.mockTemplates.models, generateModels(clusterObjects)))
 
 	// write the glue
 	if (params.gluePath) {

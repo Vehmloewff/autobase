@@ -1,6 +1,6 @@
 import { bypassRoute } from '../router.ts'
 import { controllers } from '../mock/mod.ts'
-import { UserError } from '../lib/mod.ts'
+import { UserError } from '../../lib/mod.ts'
 
 bypassRoute('get /controllers', () => {
 	return Object.keys(controllers)

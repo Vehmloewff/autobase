@@ -60,7 +60,7 @@ program
 				else watchLog('Starting server...')
 
 				spawn({
-					cmd: ['deno', 'run', ...deno, getUrls().server, ...app],
+					cmd: ['deno', 'run', '--importmap', `${generateDir}/importmap.json`, ...deno, getUrls().server, ...app],
 					abortSignal,
 				}).then(({ code }) => {
 					if (abortSignal.aborted) return
