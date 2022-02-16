@@ -274,7 +274,7 @@ async function conventionalMethod(params: ConventionalMethodParams) {
 	headers.append('Client-Id', clientId)
 
 	return await fetch(`${apiUrl}/call/${params.controllerName}/${params.methodName}`, {
-		body: params.params,
+		body: JSON.stringify({ params: params.params }),
 		method: 'POST',
 		headers,
 	}).then(async res => {

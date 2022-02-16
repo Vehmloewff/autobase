@@ -35,7 +35,9 @@ registerRequestHandler(async request => {
 		responseHeaders: headers,
 	}
 
-	const data = await method.fn(context)
+	const { params } = await request.json()
+
+	const data = await method.fn(context, params)
 
 	return new Response(JSON.stringify({ data }), { headers })
 })
