@@ -1,10 +1,6 @@
-export let FS_ROOT: string
-export let PORT: number
+import { flags } from '../deps.ts'
 
-export function setFsRoot(root: string) {
-	FS_ROOT = root
-}
+const options = flags.parse(Deno.args)
 
-export function setPort(port: number) {
-	PORT = port
-}
+export const PORT: number = options.port || parseInt(Deno.env.get('PORT') || '8080')
+export const FS_ROOT: string = options.dataDir || 'data'

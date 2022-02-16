@@ -24,8 +24,11 @@ export async function registerModel<T>(name: string, params: RegisterModelParams
 	const base = `${FS_ROOT}/collections/${name}`
 	const index = params.index || 'id'
 
-	const stats = await Deno.stat(base)
-	if (!stats) await Deno.mkdir(base, { recursive: true })
+	try {
+		await Deno.stat(base)
+	} catch (_) {
+		await Deno.mkdir(base, { recursive: true })
+	}
 
 	type Events = {
 		insert: [string]

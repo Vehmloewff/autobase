@@ -1,28 +1,10 @@
 import { http, flags } from '../deps.ts'
 import { rootRequestHandler } from '../lib/mod.ts'
-import { setFsRoot, setPort } from './globals.ts'
+import { PORT } from './globals.ts'
 
 import './register-controllers.ts'
 import './connection.ts'
 import './bypass/mod.ts'
-
-const options = flags.parse(Deno.args)
-
-const port: number = options.port || parseInt(Deno.env.get('PORT') || '8080')
-const dataDir: string = options.dataDir || 'data'
-
-// Create the dataDir if it does not exist
-{
-	try {
-		await Deno.stat(dataDir)
-	} catch (_) {
-		await Deno.mkdir(dataDir, { recursive: true })
-	}
-}
-
-// Remember the globals
-setFsRoot(dataDir)
-setPort(port)
 
 // Handle requests
 {
@@ -34,10 +16,10 @@ setPort(port)
 		return response
 	}
 
-	console.log(`Starting server at http://localhost:${port}`)
+	console.log(`Starting server at http://localhost:${PORT}`)
 
 	http.serve(handler, {
-		port,
+		port: PORT,
 		// deno-lint-ignore no-explicit-any
 		onError(error: any) {
 			if (error.isUserError) return new Response(error.message, { status: 406 })
