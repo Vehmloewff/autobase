@@ -15,7 +15,11 @@ import './bypass/mod.ts'
 
 		if (new URL(request.url).pathname === '/connection') return response
 
-		const headers = new Headers({ 'Access-Control-Allow-Origin': '*' })
+		const headers = new Headers({
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Headers': '*',
+			'Access-Control-Allow-Methods': '*',
+		})
 		for (const [key, value] of response.headers.entries()) headers.set(key, value)
 
 		return new Response(await response.blob(), { headers, status: response.status, statusText: response.statusText })
