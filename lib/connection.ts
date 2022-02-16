@@ -12,17 +12,6 @@ export interface SingularConnection<T> {
 	model: Model<T>
 }
 
-export interface PluralConnectionParams<T> {
-	connection: Connection
-	model: Model<T>
-	onChange(): Promise<T[]> | T[]
-}
-
-export interface PluralConnection<T> {
-	connectionType: 'plural'
-	model: Model<T>
-}
-
 export function singularConnection<T>(params: SingularConnectionParams<T>): SingularConnection<T> {
 	async function start() {
 		// run our listener an initial time to get the initial document for the client
@@ -101,6 +90,17 @@ export function singularConnection<T>(params: SingularConnectionParams<T>): Sing
 		connectionType: 'singular',
 		model: params.model,
 	}
+}
+
+export interface PluralConnectionParams<T> {
+	connection: Connection
+	model: Model<T>
+	onChange(): Promise<T[]> | T[]
+}
+
+export interface PluralConnection<T> {
+	connectionType: 'plural'
+	model: Model<T>
 }
 
 export function pluralConnection<T>(params: PluralConnectionParams<T>): PluralConnection<T> {
