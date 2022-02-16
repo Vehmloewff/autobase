@@ -31,8 +31,6 @@ function makeStorable<T>(value: T): Storable<T> {
 	}
 
 	function set(newVal: T) {
-		if (value === newVal) return
-
 		value = newVal
 
 		subscribers.forEach(listener => listener(value, false))
@@ -63,7 +61,17 @@ function makeStorable<T>(value: T): Storable<T> {
 	}
 }
 
-let onSubscription: (methodPath: string, subscriptionCount: number) => void = () => {}
+const preOpenedMethods: string[] = []
+
+const defaultOnSubscriptionHandler = (methodPath: string, subscriptionCount: number) => {
+	const methodPathIndex = preOpenedMethods.indexOf(methodPath)
+	const exists = methodPathIndex !== -1
+
+	if (subscriptionCount > 0 && !exists) preOpenedMethods.push(methodPath)
+	else if (subscriptionCount === 0 && exists) preOpenedMethods.splice(methodPathIndex, 1)
+}
+
+let onSubscription: (methodPath: string, subscriptionCount: number) => void = defaultOnSubscriptionHandler
 
 export interface ReadableStore<T> {
 	get(): T
@@ -151,8 +159,6 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 		const unsubscribers: (() => void)[] = []
 		const methodIsObserving: Record<string, boolean> = {}
 
-		for (const methodPath in storables) methodIsObserving[methodPath] = false
-
 		const url = `${wsUrl}/connection`
 		console.log(`[socket] connecting to ${url}...`)
 
@@ -160,6 +166,8 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 		const websocket = new WebSocket(`${url}?clientId=${clientId}`)
 
 		websocket.onclose = () => {
+			onSubscription = defaultOnSubscriptionHandler
+
 			unsubscribers.forEach(fn => fn())
 			online.set(false)
 
@@ -178,6 +186,14 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 			didConnect = true
 			resolve()
 
+			for (const methodPath in storables) methodIsObserving[methodPath] = preOpenedMethods.indexOf(methodPath) !== -1
+
+			for (const methodPath in methodIsObserving) {
+				const observing = methodIsObserving[methodPath]
+
+				if (observing) websocket.send(JSON.stringify({ $: 'add-observation', methodPath }))
+			}
+
 			onSubscription = (methodPath, numberOfSubscribers) => {
 				const isObserving = methodIsObserving[methodPath]
 				const shouldObserve = numberOfSubscribers > 0
@@ -185,8 +201,15 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 				if (isObserving && shouldObserve) return
 				if (!isObserving && !shouldObserve) return
 
-				if (isObserving && !shouldObserve) return websocket.send(JSON.stringify({ $: 'remove-observation', methodPath }))
-				if (!isObserving && shouldObserve) return websocket.send(JSON.stringify({ $: 'add-observation', methodPath }))
+				if (isObserving && !shouldObserve) {
+					methodIsObserving[methodPath] = false
+					return websocket.send(JSON.stringify({ $: 'remove-observation', methodPath }))
+				}
+
+				if (!isObserving && shouldObserve) {
+					methodIsObserving[methodPath] = true
+					return websocket.send(JSON.stringify({ $: 'add-observation', methodPath }))
+				}
 			}
 
 			unsubscribers.push(
@@ -296,7 +319,7 @@ export interface ConnectParams {
 }
 
 export async function connect(params: ConnectParams) {
-	const secure = params.forceSecure || location.host === 'https:'
+	const secure = params.forceSecure || location?.host === 'https:'
 
 	clientId = params.clientId
 	apiUrl = `${secure ? 'https' : 'http'}://${params.host}`
