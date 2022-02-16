@@ -1,7 +1,9 @@
 import { FS_ROOT } from '../server/globals.ts'
 
 export function severLog(message: string) {
-	Deno.writeTextFile(`${FS_ROOT}/log.txt`, `${message}\n`, {
+	console.log('[server log]', message)
+
+	Deno.writeTextFile(`${FS_ROOT}/log.txt`, `${Date.now()} ${message}\n`, {
 		append: true,
 	})
 }
