@@ -14,11 +14,30 @@ registerRequestHandler(request => {
 
 	const { response, socket } = Deno.upgradeWebSocket(request)
 
+	let timeout: number
+	let oldUserDescription = 'guest'
+
 	socket.onmessage = ({ data }) => {
 		const message = JSON.parse(data)
 
 		if (message.$ === 'add-observation') addObservation(socket, message.methodPath, clientId)
 		else if (message.$ === 'remove-observation') removeObservation(message.methodPath, clientId)
+		else if (message.$ === 'heartbeat') {
+			const user = inferUserFromClient(clientId)
+			const newUserDescription = user.isAdmin ? 'admin' : user.isReal ? 'real' : 'guest'
+
+			if (oldUserDescription !== newUserDescription) socket.send(JSON.stringify({ $: 'auth-change', changeTo: newUserDescription }))
+
+			oldUserDescription = newUserDescription
+
+			// Close socket if we don't receive another heartbeat for 20 seconds
+			{
+				clearTimeout(timeout)
+				timeout = setTimeout(() => {
+					socket.close()
+				}, 20 * 1000)
+			}
+		}
 	}
 
 	return response
@@ -64,7 +83,7 @@ async function addObservation(socket: WebSocket, methodPath: string, clientId: s
 		remove(documentId) {
 			if (!model) throw new Error('connection.remove can only be called after method has returned')
 
-			socket.send(JSON.stringify({ $: 'item-update', methodPath, id: documentId, index: model.index }))
+			socket.send(JSON.stringify({ $: 'item-remove', methodPath, id: documentId, index: model.index }))
 		},
 	}
 
