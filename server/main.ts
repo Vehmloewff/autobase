@@ -1,4 +1,4 @@
-import { http, flags } from '../deps.ts'
+import { http } from '../deps.ts'
 import { rootRequestHandler } from '../lib/mod.ts'
 import { PORT } from './globals.ts'
 
