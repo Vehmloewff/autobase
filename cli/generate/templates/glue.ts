@@ -260,6 +260,7 @@ async function conventionalMethod(params: ConventionalMethodParams) {
 
 	return await fetch(`${apiUrl}/call/${params.controllerName}/${params.methodName}`, {
 		body: params.params,
+		method: 'POST',
 		headers,
 	}).then(async res => {
 		if (!res.ok) throw new Error(await res.text())
