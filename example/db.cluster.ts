@@ -1,7 +1,7 @@
 import { registerModel } from '../mod.ts'
 
 export interface Notebook {
-	id: '123423'
+	id: string
 	name: string
 	ownerUserId: string
 	notes: string[]

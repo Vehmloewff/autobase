@@ -150,6 +150,8 @@ export function pluralConnection<T>(params: PluralConnectionParams<T>): PluralCo
 					// remove it from the list of currentIds too
 					return false
 				}
+
+				return true
 			})
 
 			// find and documents that are not present on the client, but are present in the list of new values...
