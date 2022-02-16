@@ -42,7 +42,12 @@ export interface BinaryDef {
 	$: 'binary'
 }
 
-export type TypeDef = NullDef | ArrayDef | ObjectDef | StringDef | NumberDef | BooleanDef | UnionDef | BinaryDef
+export interface ModelRef {
+	$: 'model-ref'
+	name: string
+}
+
+export type TypeDef = NullDef | ArrayDef | ObjectDef | StringDef | NumberDef | BooleanDef | UnionDef | BinaryDef | ModelRef
 
 export interface PropertyDef {
 	name: string
@@ -66,6 +71,8 @@ export function parseTypeDef(def: TsTypeDef): TypeDef {
 	if (def.kind === 'typeLiteral') return parseObjectDef(def.typeLiteral.properties)
 	if (def.kind === 'typeRef') {
 		if (def.typeRef.typeName === 'Uint8Array') return { $: 'binary' }
+
+		return { $: 'model-ref', name: def.typeRef.typeName }
 	}
 
 	console.log('unsupported type:', def)

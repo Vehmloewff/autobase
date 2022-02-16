@@ -1,5 +1,9 @@
 import { Notebook } from '../db.cluster.ts'
-import { Connection, pluralConnection, PluralConnection } from '../../mod.ts'
+import { Connection, pluralConnection, PluralConnection, Context } from '../../mod.ts'
+
+export function getNotebook(_: Context, id: string): Promise<Notebook | null> {
+	return Notebook.get(id)
+}
 
 export function $myNotebooks(connection: Connection): PluralConnection<Notebook> {
 	return pluralConnection({

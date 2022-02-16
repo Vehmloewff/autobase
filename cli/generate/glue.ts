@@ -15,6 +15,7 @@ function stringifyType(type: TypeDef, currentDepth: number): string {
 	else if (type.$ === 'array') return `${stringifyType(type.type, currentDepth)}[]`
 	else if (type.$ === 'boolean') return type.literal === true ? 'true' : type.literal === false ? 'false' : 'boolean'
 	else if (type.$ === 'binary') return 'Uint8Array'
+	else if (type.$ === 'model-ref') return type.name
 	else if (type.$ === 'number') {
 		if (type.literal !== null) return type.literal.toString()
 
