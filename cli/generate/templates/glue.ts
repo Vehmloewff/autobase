@@ -188,6 +188,12 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 				if (isObserving && !shouldObserve) return websocket.send(JSON.stringify({ $: 'remove-observation', methodPath }))
 				if (!isObserving && shouldObserve) return websocket.send(JSON.stringify({ $: 'add-observation', methodPath }))
 			}
+
+			unsubscribers.push(
+				heartbeatNumber.subscribe(() => {
+					websocket.send(JSON.stringify({ $: 'heartbeat' }))
+				})
+			)
 		}
 
 		websocket.onmessage = ({ data }) => {
@@ -249,12 +255,6 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 				else if (message.changeTo === 'admin') user.set({ clientId, isAdmin: true, isGuest: false, isReal: false })
 			}
 		}
-
-		unsubscribers.push(
-			heartbeatNumber.subscribe(() => {
-				websocket.send(JSON.stringify({ $: 'heartbeat' }))
-			})
-		)
 	})
 }
 
