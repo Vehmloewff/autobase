@@ -9,9 +9,9 @@ import './bypass/mod.ts'
 // Handle requests
 {
 	const handler = async (request: Request): Promise<Response> => {
-		const response = await rootRequestHandler(request)
+		const response = (await rootRequestHandler(request)) || new Response('route not found', { status: http.Status.NotFound })
 
-		if (!response) return new Response('route not found', { status: http.Status.NotFound })
+		response.headers.append('Access-Control-Allow-Origin', '*')
 
 		return response
 	}
