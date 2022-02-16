@@ -93,7 +93,7 @@ export async function getMethods(url: string): Promise<MethodDef[]> {
 					if (childType.kind !== 'typeRef') throw new Error(`expected PluralConnection's type parameter to be a Model (${loc})`)
 
 					return {
-						tense: 'singular',
+						tense: 'plural',
 						emitModel: childType.typeRef.typeName,
 					}
 				}
