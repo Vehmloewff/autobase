@@ -134,6 +134,15 @@ export const user = makeStorable<User>({
 
 export const online = makeStorable(false)
 
+const heartbeatNumber = makeStorable(0)
+
+export function injectHeartbeat() {
+	heartbeatNumber.set(heartbeatNumber.get() + 1)
+}
+
+// Create a heartbeat every 10 seconds
+setInterval(injectHeartbeat, 10 * 1000)
+
 /** Bare connect takes in the stores to be synced as an object { 'controllerName/methodName': storable } */
 function bareConnect(storables: Record<string, CustomStorable<any>>) {
 	return new Promise<void>(resolve => {
@@ -240,6 +249,12 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 				else if (message.changeTo === 'admin') user.set({ clientId, isAdmin: true, isGuest: false, isReal: false })
 			}
 		}
+
+		unsubscribers.push(
+			heartbeatNumber.subscribe(() => {
+				websocket.send(JSON.stringify({ $: 'heartbeat' }))
+			})
+		)
 	})
 }
 
