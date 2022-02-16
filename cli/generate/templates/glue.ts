@@ -276,7 +276,7 @@ async function conventionalMethod(params: ConventionalMethodParams) {
 export interface ConnectParams {
 	clientId: string
 	host: string
-	forceSecure: boolean
+	forceSecure?: boolean
 }
 
 export async function connect(params: ConnectParams) {
