@@ -39,6 +39,7 @@ Every client that connects must make it's own client id.  Any time a client send
 - Binary responses (done)
 - File Storage
 - TypeRef support so that not all types have to be defined "onsite"
+- Support for admin upgrade
 - Start server on a custom port (done)
 - command: bundle
 - command: compile
