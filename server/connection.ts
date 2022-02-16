@@ -40,6 +40,12 @@ registerRequestHandler(request => {
 		}
 	}
 
+	socket.onclose = () => {
+		for (const methodPath in observationsDestroyers) {
+			removeObservation(methodPath, clientId)
+		}
+	}
+
 	return response
 })
 

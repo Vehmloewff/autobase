@@ -36,7 +36,7 @@ export async function registerModel<T>(name: string, params: RegisterModelParams
 		update: [string]
 	}
 
-	const emitter = new event.EventEmitter<Events>()
+	const emitter = new event.EventEmitter<Events>(9999999999)
 
 	function inferId(document: T) {
 		const id = document[index as keyof T]
