@@ -1,6 +1,19 @@
 // deno-lint-ignore-file
 // This is a generated file.  Do not edit.
 
+export function uuid() {
+	let d = Date.now()
+	return `xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`.replace(/[xy]/g, c => {
+		const r = (d + Math.random() * 16) % 16 | 0
+		d = Math.floor(d / 16)
+		return (c == `x` ? r : (r & 0x3) | 0x8).toString(16)
+	})
+}
+
+export function generateClientId(prefix = 'client-id-') {
+	return `${prefix}${uuid()}`
+}
+
 export interface Storable<T> {
 	get(): T
 	set(v: T): void
@@ -85,13 +98,8 @@ function makeCustomStorable<T>(methodPath: string, value: T): CustomStorable<T> 
 }
 
 let apiUrl: string | null = null
-
-export function setApiUrl(url: string) {
-	apiUrl = url
-}
-
-export const clientId = localStorage.getItem('client-id') || `client-id-${crypto.randomUUID()}`
-localStorage.setItem('client-id', clientId)
+let wsUrl: string | null = null
+let clientId: string | null = null
 
 export type User = RealUser | GuestUser | AdminUser
 
@@ -118,7 +126,7 @@ export interface AdminUser {
 }
 
 export const user = makeStorable<User>({
-	clientId,
+	clientId: 'not-yet-allocated',
 	isAdmin: false,
 	isGuest: true,
 	isReal: false,
@@ -127,18 +135,18 @@ export const user = makeStorable<User>({
 /** Bare connect takes in the stores to be synced as an object { 'controllerName/methodName': storable } */
 function bareConnect(storables: Record<string, CustomStorable<any>>) {
 	return new Promise<void>(resolve => {
+		if (!clientId || !wsUrl) throw new Error('invalid params passed to connect')
+
 		const unsubscribers: (() => void)[] = []
 		const methodIsObserving: Record<string, boolean> = {}
 
 		for (const methodPath in storables) methodIsObserving[methodPath] = false
 
-		const url = `${apiUrl}/connection`
+		const url = `${wsUrl}/connection`
 		console.log(`[socket] connecting to ${url}...`)
 
-		const query = new URLSearchParams({ clientId })
-
 		let didConnect = false
-		const websocket = new WebSocket(url + query)
+		const websocket = new WebSocket(`${url}?clientId=${clientId}`)
 
 		websocket.onclose = () => {
 			unsubscribers.forEach(fn => fn())
@@ -220,6 +228,8 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 
 				storable.set(currentValue)
 			} else if (message.$ === 'auth-change') {
+				if (!clientId) throw new Error('unexpected outcome in generated glue code')
+
 				if (message.changeTo === 'guest') user.set({ clientId, isAdmin: false, isGuest: true, isReal: false })
 				else if (message.changeTo === 'real')
 					user.set({ clientId, isAdmin: false, isGuest: false, isReal: true, userId: message.userId })
@@ -237,7 +247,7 @@ interface ConventionalMethodParams {
 }
 
 async function conventionalMethod(params: ConventionalMethodParams) {
-	if (!apiUrl) throw new Error('setApiUrl must be called before any other methods or connections')
+	if (!apiUrl || !clientId) throw new Error('connect must be called before any methods are called')
 
 	const returnType = params.returnType || 'string'
 	const headers = new Headers()
@@ -259,7 +269,21 @@ async function conventionalMethod(params: ConventionalMethodParams) {
 
 // DEFINE_CUSTOM_STORABLES
 
-export async function connect() {
+export interface ConnectParams {
+	clientId: string
+	host: string
+	forceSecure: boolean
+}
+
+export async function connect(params: ConnectParams) {
+	const secure = params.forceSecure || location.host === 'https:'
+
+	clientId = params.clientId
+	apiUrl = `${secure ? 'https' : 'http'}://${params.host}`
+	wsUrl = `${secure ? 'wss' : 'ws'}://${params.host}`
+
+	user.set({ clientId, isAdmin: false, isGuest: true, isReal: false })
+
 	await bareConnect({
 		// INSERT_CUSTOM_STORABLES
 	})
