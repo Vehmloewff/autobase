@@ -54,7 +54,12 @@ program
 				if (eventType === 'change') autobaseLog('File change detected!  Recompiling...')
 				else autobaseLog('Compiling server...')
 
-				await generate({ generateDir, dir, gluePath })
+				try {
+					await generate({ generateDir, dir, gluePath })
+				} catch (e) {
+					console.error(e)
+					return watchLog('Compilation failed.  Retrying on file change...')
+				}
 
 				if (eventType === 'change') watchLog('Restarting server...')
 				else watchLog('Starting server...')
