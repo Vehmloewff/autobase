@@ -82,9 +82,11 @@ interface CustomStorable<T> {
 	readable: ReadableStore<T>
 	set: Storable<T>['set']
 	getNumberOfSubscribers: Storable<T>['getNumberOfSubscribers']
+	defaultValue: T
 }
 
 function makeCustomStorable<T>(methodPath: string, value: T): CustomStorable<T> {
+	const defaultValue = value
 	const { get, getNumberOfSubscribers, set, subscribe } = makeStorable(value)
 
 	return {
@@ -102,6 +104,7 @@ function makeCustomStorable<T>(methodPath: string, value: T): CustomStorable<T> 
 		},
 		set,
 		getNumberOfSubscribers,
+		defaultValue,
 	}
 }
 
@@ -202,6 +205,9 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 				if (!isObserving && !shouldObserve) return
 
 				if (isObserving && !shouldObserve) {
+					// set the observation to it's default value (null or [], depending on the tense) when subscribers are removed to conserve memory
+					storables[methodPath].set(storables[methodPath].defaultValue)
+
 					methodIsObserving[methodPath] = false
 					return websocket.send(JSON.stringify({ $: 'remove-observation', methodPath }))
 				}
