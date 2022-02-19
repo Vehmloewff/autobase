@@ -253,7 +253,7 @@ function bareConnect(storables: Record<string, CustomStorable<any>>) {
 				const currentValue = storable.readable.get() as any[]
 				if (!Array.isArray(currentValue)) throw new Error('cannot perform an insert on a value that is not an array')
 
-				const indexOfItemToUpdate = currentValue.findIndex(item => item[message.index] === message.id)
+				const indexOfItemToUpdate = currentValue.findIndex(item => item[message.index] === message.date[message.index])
 				if (indexOfItemToUpdate === -1) throw new Error('cannot find item that was supposed to be updated')
 
 				currentValue[indexOfItemToUpdate] = message.data
