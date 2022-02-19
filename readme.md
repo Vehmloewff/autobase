@@ -45,3 +45,4 @@ Every client that connects must make it's own client id.  Any time a client send
 - command: compile
 - command: output
 - command: update
+- error catcher for connections - including
