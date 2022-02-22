@@ -3,27 +3,29 @@ import { severLog } from './server-log.ts'
 
 export interface SendEmailParams {
 	to: string
+	from: string
 	subject: string
-	content: string
-	contentIsHtml?: boolean
+	text: string
+	html?: string
 }
 
 export async function sendEmail(params: SendEmailParams) {
-	const { sendEmailWebhook, sendEmailWebhookPassword } = getSettings()
-	if (!sendEmailWebhook) return severLog(`Cannot send email because no send email webhook has been provided`)
+	const { sendGridApiKey } = getSettings()
+	if (!sendGridApiKey) return severLog(`Cannot send email because no SendGrid API Key setting has been specified`)
 
-	const headers = new Headers()
+	const content = [{ type: 'text/plain', value: params.text }]
+	if (params.html) content.push({ type: 'text/html', value: params.html })
 
-	if (sendEmailWebhookPassword) headers.append('Authentication', sendEmailWebhookPassword)
-	else severLog('It is unsafe to send emails without authentication because theoretically anyone can impersonate your company')
+	const body = {
+		personalizations: [{ to: [{ email: params.to }] }],
+		from: { email: params.from },
+		subject: params.subject,
+		content,
+	}
 
-	const searchParams = new URLSearchParams()
+	const headers = new Headers({ Authorization: `Bearer $${sendGridApiKey}` })
 
-	searchParams.append('to', params.to)
-	searchParams.append('subject', params.subject)
-	if (params.contentIsHtml) searchParams.append('content-is-html', 'true')
-
-	await fetch(sendEmailWebhook, { body: params.content, headers }).then(async res => {
+	await fetch('https://api.sendgrid.com/v3/mail/send', { body: JSON.stringify(body), headers }).then(async res => {
 		if (!res.ok) severLog(`Failed to send an email.  Received response status ${res.status}.  Body: ${await res.text()}`)
 	})
 }

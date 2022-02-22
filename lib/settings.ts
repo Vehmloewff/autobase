@@ -4,8 +4,7 @@ export interface Settings {
 	rootPassword: string
 	publishedUrl: string
 	bypassPassword: string | null
-	sendEmailWebhook: string | null
-	sendEmailWebhookPassword: string | null
+	sendGridApiKey: string | null
 }
 
 const stashedSettings = await inferSettings()
@@ -39,7 +38,6 @@ async function inferSettings(): Promise<Settings> {
 		publishedUrl: 'http://localhost:3000',
 		rootPassword: crypto.randomUUID().replaceAll('-', '').slice(10),
 		bypassPassword: null,
-		sendEmailWebhook: null,
-		sendEmailWebhookPassword: null,
+		sendGridApiKey: null,
 	}
 }
