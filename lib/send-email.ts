@@ -23,7 +23,10 @@ export async function sendEmail(params: SendEmailParams) {
 		content,
 	}
 
-	const headers = new Headers({ Authorization: `Bearer ${sendGridApiKey}` })
+	const headers = new Headers({
+		Authorization: `Bearer ${sendGridApiKey}`,
+		'Content-Type': 'application/json',
+	})
 
 	await fetch('https://api.sendgrid.com/v3/mail/send', {
 		method: 'POST',
