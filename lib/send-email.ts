@@ -25,7 +25,11 @@ export async function sendEmail(params: SendEmailParams) {
 
 	const headers = new Headers({ Authorization: `Bearer $${sendGridApiKey}` })
 
-	await fetch('https://api.sendgrid.com/v3/mail/send', { body: JSON.stringify(body), headers }).then(async res => {
+	await fetch('https://api.sendgrid.com/v3/mail/send', {
+		method: 'POST',
+		body: JSON.stringify(body),
+		headers,
+	}).then(async res => {
 		if (!res.ok) severLog(`Failed to send an email.  Received response status ${res.status}.  Body: ${await res.text()}`)
 	})
 }
