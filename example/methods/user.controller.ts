@@ -20,8 +20,9 @@ export async function login(context: Context, email: string) {
 
 	await sendEmail({
 		to: email,
+		from: 'no-reply@example.com',
 		subject: 'Login Link',
-		content: `Click this link to login:\n\n${magicLink}\n`,
+		text: `Click this link to login:\n\n${magicLink}\n`,
 	})
 }
 
@@ -55,8 +56,9 @@ export async function createAccount(context: Context, email: string): Promise<vo
 
 	await sendEmail({
 		to: email,
+		from: 'no-reply@example.com',
 		subject: 'Confirm Your Email',
-		content: `Click this link to create your account:\n\n${magicLink}\n`,
+		text: `Click this link to create your account:\n\n${magicLink}\n`,
 	})
 }
 
