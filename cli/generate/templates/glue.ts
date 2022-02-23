@@ -324,7 +324,7 @@ export interface ConnectParams {
 }
 
 export async function connect(params: ConnectParams) {
-	const secure = params.forceSecure || location?.host === 'https:'
+	const secure = params.forceSecure || location?.protocol === 'https:'
 
 	clientId = params.clientId
 	apiUrl = `${secure ? 'https' : 'http'}://${params.host}`
