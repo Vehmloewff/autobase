@@ -18,7 +18,7 @@ export async function getModels(url: string) {
 				`Models cannot extend anything, but interface ${entry.name} extends ${entry.interfaceDef.extends.length} interface(s)`
 			)
 
-		const { properties } = parseObjectDef(entry.interfaceDef.properties)
+		const { properties } = parseObjectDef(entry.interfaceDef.properties, entries)
 
 		models.push({ name: entry.name, properties })
 	}

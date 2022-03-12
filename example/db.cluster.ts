@@ -1,14 +1,19 @@
 import { registerModel } from '../mod.ts'
 
+export type Permissions = 'view' | 'edit' | 'write'
+
+export type Settings = {
+	public: boolean
+	access: boolean[]
+	permissions: Permissions
+}
+
 export interface Notebook {
 	id: string
 	name: string
 	ownerUserId: string
 	notes: string[]
-	settings: {
-		public: boolean
-		access: boolean[]
-	}
+	settings: Settings
 }
 
 export const Notebook = await registerModel<Notebook>('Notebook', { index: 'id' })

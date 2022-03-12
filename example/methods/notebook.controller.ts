@@ -5,13 +5,15 @@ export function getNotebook(_: Context, id: string): Promise<Notebook | null> {
 	return Notebook.get(id)
 }
 
-export async function addNotebook(_: Context) {
+export type AddNotebookParams = Notebook['settings']['permissions']
+
+export async function addNotebook(_: Context, params: AddNotebookParams) {
 	await Notebook.insert({
 		id: crypto.randomUUID(),
 		name: 'Notebook insert',
 		notes: [],
 		ownerUserId: '',
-		settings: { access: [], public: false },
+		settings: { access: [], permissions: params, public: true },
 	})
 }
 

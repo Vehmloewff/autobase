@@ -55,7 +55,7 @@ export async function getMethods(url: string): Promise<MethodDef[]> {
 			} else if (argumentNumber === 2) {
 				if (type === 'connection') throw new Error(`it is illegal to specify a second argument in a connection method (${loc})`)
 
-				params = parseTypeDef(tsType)
+				params = parseTypeDef(tsType, entries)
 			}
 		}
 
@@ -117,7 +117,7 @@ export async function getMethods(url: string): Promise<MethodDef[]> {
 
 				if (type.kind === 'keyword' && type.keyword === 'void') return null
 
-				return parseTypeDef(type)
+				return parseTypeDef(type, entries)
 			}
 
 			methods.push({ type: 'conventional', name: entry.name, params, returnType: getReturnType(returnType) })
