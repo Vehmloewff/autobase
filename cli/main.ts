@@ -45,11 +45,15 @@ program
 		const gluePath = options.glue ? simplifyPath(options.glue) : null
 		const { app, deno } = parseRestArgs(options._)
 
+		const ignorePaths = ['.autobase/']
+		if (gluePath) ignorePaths.push(gluePath)
+
 		await setup({ generateDir })
 
 		await runIfWatch({
 			path: dir,
 			watch,
+			ignorePaths,
 			async fn({ abortSignal, eventType }) {
 				if (eventType === 'change') autobaseLog('File change detected!  Recompiling...')
 				else autobaseLog('Compiling server...')
