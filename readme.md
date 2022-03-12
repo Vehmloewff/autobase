@@ -5,12 +5,12 @@ A server framework that does all the redundant stuff for you.
 ## Installation
 
 ```sh
-deno install -A --unstable --name autobase https://denopkg.com/Vehmloewff/autobase@1.0.0/cli/main.ts
+deno install -A --unstable --name autobase https://denopkg.com/Vehmloewff/autobase@1.2.0/cli/main.ts
 ```
 
 ## Usage
 
-Although, this project is fully functional, full documentation has not yet been made. (I would love a PR for this :heart_eyes:).
+Although, this project is fully functional, full documentation has not yet been made. (I would love a PR for this :sweat_smile:).
 
 For now, just check the `example` folder for an example project.
 
