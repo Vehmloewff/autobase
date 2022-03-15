@@ -1,0 +1,1 @@
+sh autobase.sh run example --watch --glue glue.generated.ts
