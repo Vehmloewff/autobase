@@ -93,6 +93,7 @@ export function parseTypeDef(def: TsTypeDef, all: DocNode[]): TypeDef {
 			return indexedValue.type
 		}
 	}
+	if (def.kind === 'parenthesized') return parseTypeDef(def.parenthesized, all)
 
 	console.log('unsupported type:', def)
 	throw new Error('found an unsupported type')

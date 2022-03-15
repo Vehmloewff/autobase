@@ -1,6 +1,6 @@
 import { registerModel } from '../mod.ts'
 
-export type Permissions = 'view' | 'edit' | 'write'
+export type Permissions = ('view' | 'edit' | 'write')[]
 
 export type Settings = {
 	public: boolean
