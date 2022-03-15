@@ -4,6 +4,7 @@ import { version, getUrls } from './utils/urls.ts'
 import { spawn } from './utils/spawn.ts'
 import { runIfWatch } from './utils/run-if-watch.ts'
 import { sade, colors } from './deps.ts'
+import { getLatestVersion, install } from './install.ts'
 
 // deno-lint-ignore no-explicit-any
 type Any = any
@@ -80,5 +81,15 @@ program
 			},
 		})
 	})
+
+program.command('update', 'Check for updates and update Autobase to the latest version if there are any').action(async () => {
+	console.log('Checking for updates...')
+	const latestVersion = await getLatestVersion()
+
+	if (latestVersion === version) return console.log(`You're already on the latest version ! (${version})}`)
+
+	console.log(`Updating to version ${latestVersion}...`)
+	await install(latestVersion)
+})
 
 await program.parse(Deno.args)
