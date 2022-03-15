@@ -40,7 +40,8 @@ function stringifyType(type: TypeDef, currentDepth: number): string {
 		}
 
 		return `{\n${lines.join('\n')}\n${'\t'.repeat(currentDepth)}}`
-	}
+	} else if (type.$ === 'record')
+		return `Record<${stringifyType(type.keyType, currentDepth)}, ${stringifyType(type.valueType, currentDepth)}>`
 
 	throw new Error(`unexpected type encountered`)
 }

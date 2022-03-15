@@ -49,7 +49,13 @@ export interface ModelRef {
 	path: string[]
 }
 
-export type TypeDef = NullDef | ArrayDef | ObjectDef | StringDef | NumberDef | BooleanDef | UnionDef | BinaryDef | ModelRef
+export interface RecordDef {
+	$: 'record'
+	keyType: TypeDef
+	valueType: TypeDef
+}
+
+export type TypeDef = NullDef | ArrayDef | ObjectDef | StringDef | NumberDef | BooleanDef | UnionDef | BinaryDef | ModelRef | RecordDef
 
 export interface PropertyDef {
 	name: string
@@ -73,6 +79,12 @@ export function parseTypeDef(def: TsTypeDef, all: DocNode[]): TypeDef {
 	if (def.kind === 'typeLiteral') return parseObjectDef(def.typeLiteral.properties, all)
 	if (def.kind === 'typeRef') {
 		if (def.typeRef.typeName === 'Uint8Array') return { $: 'binary' }
+		if (def.typeRef.typeName === 'Record')
+			return {
+				$: 'record',
+				keyType: parseTypeDef(def.typeRef.typeParams?.[0]!, all),
+				valueType: parseTypeDef(def.typeRef.typeParams?.[0]!, all),
+			}
 
 		return resolveTypeRef(def.typeRef.typeName, all)
 	}

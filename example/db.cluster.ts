@@ -24,7 +24,7 @@ export interface UserInfo {
 	username: string | null
 	firstName: string | null
 	lastName: string | null
-	notebooks: string[]
+	notebooks: Record<string, string>
 	avatar: Uint8Array
 }
 
