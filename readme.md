@@ -5,7 +5,7 @@ A server framework that does all the redundant stuff for you.
 ## Installation
 
 ```sh
-deno run --allow-run --allow-net https://denopkg.com/Vehmloewff/autobase@1.2.0/cli/main.ts update
+deno run --allow-run --allow-net https://denopkg.com/Vehmloewff/autobase/cli/main.ts update
 ```
 
 ## Usage
