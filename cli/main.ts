@@ -5,6 +5,7 @@ import { spawn } from './utils/spawn.ts'
 import { runIfWatch } from './utils/run-if-watch.ts'
 import { sade, colors } from './deps.ts'
 import { getLatestVersion, install } from './install.ts'
+import { updatePrompt } from './update-prompt.ts'
 
 // deno-lint-ignore no-explicit-any
 type Any = any
@@ -33,6 +34,7 @@ const parseRestArgs = (args: string[]): { deno: string[]; app: string[] } => {
 const program = sade('autobase')
 
 program.version(version || 'dev [un-versioned]')
+let wasUpdateCommand = false
 
 program
 	.command('run <dir>', 'Build and run server defined in <dir>')
@@ -83,6 +85,8 @@ program
 	})
 
 program.command('update', 'Check for updates and update Autobase to the latest version if there are any').action(async () => {
+	wasUpdateCommand = true
+
 	console.log('Checking for updates...')
 	const latestVersion = await getLatestVersion()
 
@@ -91,5 +95,11 @@ program.command('update', 'Check for updates and update Autobase to the latest v
 	console.log(`Updating to version ${latestVersion}...`)
 	await install(latestVersion)
 })
+
+// In case it was the update command that was passed, we will give the program a minute to have the command declare itself.
+// The we check for updates and update the server if there are any
+setTimeout(async () => {
+	if (!wasUpdateCommand) await updatePrompt()
+}, 500)
 
 await program.parse(Deno.args)
