@@ -48,7 +48,7 @@ program
 		const gluePath = options.glue ? simplifyPath(options.glue) : null
 		const { app, deno } = parseRestArgs(options._)
 
-		const ignorePaths = ['.autobase/']
+		const ignorePaths = ['.autobase/', 'data']
 		if (gluePath) ignorePaths.push(gluePath)
 
 		await setup({ generateDir })
