@@ -40,7 +40,7 @@ export async function createAccount(context: Context, email: string): Promise<vo
 				email,
 				firstName: null,
 				lastName: null,
-				notebooks: [],
+				notebooks: {},
 				username: null,
 				avatar: new Uint8Array(),
 			}
