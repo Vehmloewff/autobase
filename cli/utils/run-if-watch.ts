@@ -35,8 +35,13 @@ export async function runIfWatch(params: RunIfWatchParams) {
 					}
 				}
 
+				if (!changedPath.endsWith('.ts')) ignored = true
+
 				// If this path is not ignored, the event contains files that should trigger a run
-				if (!ignored) pathsContainsWatchedFiles = true
+				if (!ignored) {
+					pathsContainsWatchedFiles = true
+					break
+				}
 			}
 
 			if (!pathsContainsWatchedFiles) continue
