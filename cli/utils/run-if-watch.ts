@@ -12,7 +12,9 @@ export interface RunIfWatchParams {
 	ignorePaths: string[]
 }
 
-export async function runIfWatch(params: RunIfWatchParams) {
+export async function runIfWatch(params: RunIfWatchParams): Promise<void> {
+	if (params.path === '.') return runIfWatch({ ...params, path: Deno.cwd() })
+
 	let abortController = new AbortController()
 
 	await params.fn({ abortSignal: abortController.signal, eventType: 'start' })

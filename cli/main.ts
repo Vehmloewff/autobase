@@ -6,6 +6,7 @@ import { runIfWatch } from './utils/run-if-watch.ts'
 import { sade, colors } from './deps.ts'
 import { getLatestVersion, install } from './install.ts'
 import { updatePrompt } from './update-prompt.ts'
+import { warnIfProjectIsNotOnDepsVersion } from './same-version.ts'
 
 // deno-lint-ignore no-explicit-any
 type Any = any
@@ -51,6 +52,7 @@ program
 		const ignorePaths = ['.autobase/']
 		if (gluePath) ignorePaths.push(gluePath)
 
+		warnIfProjectIsNotOnDepsVersion(dir)
 		await setup({ generateDir })
 
 		await runIfWatch({
